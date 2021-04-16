@@ -21,6 +21,8 @@ static void freeproc(struct proc *p);
 
 extern char trampoline[]; // trampoline.S
 
+
+
 // initialize the proc table at boot time.
 void
 procinit(void)
@@ -84,6 +86,22 @@ allocpid() {
 
   return pid;
 }
+
+uint64
+Pleft(void)
+{
+	struct proc *p;
+	int num = 0;
+	for (p = proc; p < &proc[NPROC]; p++) {
+		acquire(&p->lock);
+		if (p->state != UNUSED) {
+			num++;
+		}
+		release(&p->lock);
+	}
+	return num;
+}
+
 
 // Look in the process table for an UNUSED proc.
 // If found, initialize state required to run in the kernel,
@@ -279,6 +297,9 @@ fork(void)
 
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
+
+  // copy mask
+  np->mask = p->mask;
 
   // Cause fork to return 0 in the child.
   np->trapframe->a0 = 0;

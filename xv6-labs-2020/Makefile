@@ -133,6 +133,8 @@ mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 .PRECIOUS: %.o
 
 UPROGS=\
+	$U/_sysinfotest\
+	$U/_trace\
 	$U/_cat\
 	$U/_echo\
 	$U/_forktest\
@@ -151,11 +153,6 @@ UPROGS=\
 	$U/_zombie\
 
 
-ifeq ($(LAB),syscall)
-UPROGS += \
-	$U/_trace\
-	$U/_sysinfotest
-endif
 
 ifeq ($(LAB),trap)
 UPROGS += \
